@@ -56,6 +56,9 @@ private:
      * \brief value_ Integer value of the button
      */
     int value_;
+
+    void resizeEvent(QResizeEvent *);
+
 };
 
 #endif // DIGITBUTTON_H

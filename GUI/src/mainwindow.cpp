@@ -3,9 +3,11 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     buttonContainer_ = new QWidget(this);
-    buttonLayout_ = new QGridLayout;
     screen_ = new LCDScreen("", this);
+    enter_ = new QPushButton("Entré", buttonContainer_);
+    clear_ = new QPushButton("Effacé", buttonContainer_);
     createDigitButtons();
+    setGeometry(0,0,400,500);
     setChildsDimensions();
     setButtonContainerLayout();
 }
@@ -14,6 +16,8 @@ MainWindow::~MainWindow()
 {
     delete buttonContainer_;
     delete screen_;
+    delete clear_;
+    delete enter_;
     for(int i = 0 ; i < digitButtons_.size(); ++i) {
         delete digitButtons_[i];
     }
@@ -22,7 +26,7 @@ MainWindow::~MainWindow()
 void MainWindow::createDigitButtons()
 {
     for(int i = 0; i < 10; ++i) {
-        digitButtons_.append(new DigitButton(QString::number(i)));
+        digitButtons_.append(new DigitButton(QString::number(i),buttonContainer_));
         connect(digitButtons_[i], SIGNAL(pressed(int)), screen_, SLOT(addText(int)));
     }
 }
@@ -32,22 +36,27 @@ void MainWindow::setButtonContainerLayout()
     const int ROW = 5;
     const int COLUMN = 4;
     int currentRow = ROW - 1;
-    int thatsizethought = digitButtons_.size();
-    buttonLayout_->addWidget(digitButtons_[0], currentRow, 0);
+    int currentColumn = 0;
+    int height = (buttonContainer_->height() - (ROW * 5 + 10)) / ROW;
+    int width = (buttonContainer_->width() - (COLUMN * 5 + 10)) / COLUMN;
+    clear_->setGeometry(5,height * currentRow + ROW, width * 2, height);
+    enter_->setGeometry(10 + width * 2, height * currentRow + ROW, width * 2, height);
+    --currentRow;
+    digitButtons_[0]->setGeometry(5,height * currentRow + ROW, width, height);
     --currentRow;
     for(int i = 0; i < digitButtons_.size() - 1; ++i) {
-        buttonLayout_->addWidget(digitButtons_[i+1], currentRow, i % (COLUMN - 1));
-        if(i != 0 && (i % COLUMN - 1) == 0) {
+        currentColumn = i % (COLUMN - 1);
+        if(i != 0 && currentColumn == 0) {
             --currentRow;
         }
+        digitButtons_[i+1]->setGeometry(5 + width * currentColumn, height * currentRow + ROW, width, height);
     }
-    buttonContainer_->setLayout(buttonLayout_);
 }
 
 void MainWindow::setChildsDimensions()
 {
-    screen_->setGeometry(0,0,size().width(), 75);
-    buttonContainer_->setGeometry(0, screen_->height() + 20, width(), height() - 75);
+    screen_->setGeometry(0,0,size().width(), 85);
+    buttonContainer_->setGeometry(0, screen_->height(), width(), height() - 75);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* e)

@@ -34,11 +34,6 @@ private:
     QWidget *buttonContainer_;
 
     /*!
-     * \brief buttonLayout_ Row/column layout for buttons
-     */
-    QGridLayout *buttonLayout_;
-
-    /*!
      * \brief screen_ Top screen to show data
      */
     LCDScreen *screen_;
@@ -46,8 +41,10 @@ private:
     /*!
      * \brief digitButtons_ Container of all DigitButton used
      */
-    QList<DigitButton* > digitButtons_;
+    QList<QPushButton* > digitButtons_;
 
+    QPushButton* enter_;
+    QPushButton* clear_;
     /*!
      * \brief createDigitButtons Create all digit buttons (0 to 9)
      */

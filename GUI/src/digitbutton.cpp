@@ -28,3 +28,8 @@ void DigitButton::triggerPressed()
 {
     emit pressed(value_);
 }
+
+void DigitButton::resizeEvent(QResizeEvent* e)
+{
+    QPushButton::resizeEvent(e);
+}

@@ -56,7 +56,7 @@ class Expression {
     protected:
 
     /*!
-        \brief Check the input is valid. Changes isValid member accordingly
+        \brief Check if the input is valid. Changes isValid member accordingly
         \return bool. Value of the test
     */
     bool checkValidity() const;

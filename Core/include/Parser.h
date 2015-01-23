@@ -58,7 +58,7 @@ class Parser {
         \brief Takes two numbers and evalutes them according to the operator
         \return double
     */
-    double doOperation(double firstNb, double secondNb, char operators);
+    double doOperation(double firstNb, double secondNb, char operators, bool& isOverflow);
 
     /*!
         \brief Find operator precedence
@@ -78,8 +78,33 @@ class Parser {
     */
     std::vector<std::string> parseStringToToken(const std::string &input);
 
+    /*!
+        \brief Takes a string and returns it as a double
+        \return double
+    */
     double convertStringToNumber(const std::string &input);
 
+    /*!
+        \brief Test for addition overflow
+        \return bool
+    */
+    bool testAdditionOverflow(double a, double b);
+    /*!
+        \brief Test for substraction overflow
+        \return bool
+    */
+    bool testSubstractionOverflow(double a, double b);
+    /*!
+        \brief Test for multiplication overflow
+        \return bool
+    */
+    bool testMultiplicationOverflow(double a, double b);
+
+    /*!
+        \brief Test for division overflow
+        \return bool
+    */
+    bool testDivisionOverflow(double a, double b);
 };
 
 #endif // PARSER_H_INCLUDED

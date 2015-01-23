@@ -44,8 +44,12 @@ signals:
      * \param value Integer value of the button
      */
     void pressed(int value);
-public slots:
 
+public slots:
+    /*!
+     * \brief triggerPressed Slot to trigger custom pressed event
+     */
+    void triggerPressed();
 private:
 
     /*!

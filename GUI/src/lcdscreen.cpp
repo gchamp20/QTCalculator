@@ -24,10 +24,20 @@ void LCDScreen::setText(const QString &text)
     updateTextContainer();
 }
 
-void LCDScreen::addText(const QString &text)
+void LCDScreen::setText(const int &toConvert)
 {
-    text_.append(text);
+    setText(QString::number(toConvert));
+}
+
+void LCDScreen::addText(const QString &text, const int &position)
+{
+    text_.insert(position, text);
     updateTextContainer();
+}
+
+void LCDScreen::addText(const int &toConvert, const int &position)
+{
+    addText(QString::number(toConvert), position);
 }
 
 void LCDScreen::updateTextContainer()

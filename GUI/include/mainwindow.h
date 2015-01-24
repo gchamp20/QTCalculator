@@ -4,9 +4,10 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QList>
+#include <QMap>
 #include <QGridLayout>
 #include "lcdscreen.h"
-#include "digitbutton.h"
+#include "numpad.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,31 +30,14 @@ public:
 private:
 
     /*!
-     * \brief buttonContainer_ QWidget for the bottom part of calculator
-     */
-    QWidget *buttonContainer_;
-
-    /*!
      * \brief screen_ Top screen to show data
      */
     LCDScreen *screen_;
 
     /*!
-     * \brief digitButtons_ Container of all DigitButton used
+     * \brief pad_ Container for digits,control and operation buttons
      */
-    QList<QPushButton* > digitButtons_;
-
-    QPushButton* enter_;
-    QPushButton* clear_;
-    /*!
-     * \brief createDigitButtons Create all digit buttons (0 to 9)
-     */
-    void createDigitButtons();
-
-    /*!
-     * \brief setButtonContainerLayout Initialize row/columns layout for buttons
-     */
-    void setButtonContainerLayout();
+    Numpad *pad_;
 
     /*!
      * \brief setChildsDimensions Calculate and set child QWidget dimensions

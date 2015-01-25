@@ -34,12 +34,12 @@ Numpad::~Numpad()
 
 void Numpad::triggerDigits(int value)
 {
-    emit digitPressed(value);
+    emit characterPressed(QString::number(value));
 }
 
-void Numpad::triggerOperator()
+void Numpad::triggerOperator(QString value)
 {
-    //TO IMPLEMENT
+    emit characterPressed(value);
 }
 
 void Numpad::triggerEnter()
@@ -59,7 +59,7 @@ void Numpad::createButtons()
     }
 
     for(int i = static_cast<int>(Operation::ADDITION); i < static_cast<int>(Operation::END_ENUM); ++i) {
-        operators_.push_back(new QPushButton(this));
+        operators_.push_back(new CharacterButton(this));
     }
 
     for(int i = static_cast<int>(Control::ENTER); i < static_cast<int>(Control::END_ENUM); ++i) {
@@ -70,12 +70,15 @@ void Numpad::createButtons()
 void Numpad::initializeButtons()
 {
     operators_[static_cast<int>(Operation::ADDITION)]->setText("+");
-    operators_[static_cast<int>(Operation::SUBSTRACION)]->setText("-");
+    operators_[static_cast<int>(Operation::SUBSTRACION)]->setText("—");
+    operators_[static_cast<int>(Operation::SUBSTRACION)]->setTextValue("-");
     operators_[static_cast<int>(Operation::MULTIPLICATION)]->setText("x");
+    operators_[static_cast<int>(Operation::MULTIPLICATION)]->setText("*");
     operators_[static_cast<int>(Operation::DIVISION)]->setText("/");
     operators_[static_cast<int>(Operation::LPARENTHESIS)]->setText("(");
     operators_[static_cast<int>(Operation::RPARENTHESIS)]->setText(")");
-    operators_[static_cast<int>(Operation::MINUS)]->setText("( - )");
+    operators_[static_cast<int>(Operation::MINUS)]->setText("-");
+    operators_[static_cast<int>(Operation::MINUS)]->setTextValue("#");
 }
 
 void Numpad::connectSignals()
@@ -85,7 +88,7 @@ void Numpad::connectSignals()
     }
 
     for(int i = 0; i < operators_.size(); ++i) {
-        //TO DO
+        connect(operators_[i], SIGNAL(pressed(QString)), this, SLOT(triggerOperator(QString)));
     }
     connect(controls_[static_cast<int>(Control::ENTER)], SIGNAL(pressed()), this, SLOT(triggerEnter()));
     connect(controls_[static_cast<int>(Control::CLEAR)], SIGNAL(pressed()), this, SLOT(triggerClear()));

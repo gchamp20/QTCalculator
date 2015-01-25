@@ -18,7 +18,6 @@ class DigitButton : public QPushButton
 {
     Q_OBJECT
 public:
-
     /*!
      * \brief DigitButton Constructor
      * \param parent Parent QWidget (Default set to null)
@@ -45,7 +44,7 @@ signals:
      */
     void pressed(int value);
 
-public slots:
+private slots:
     /*!
      * \brief triggerPressed Slot to trigger custom pressed event
      */

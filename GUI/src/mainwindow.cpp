@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setGeometry(50,50,275,400);
     pad_ = new Numpad(width(), height() - 75, this);
     setChildsDimensions();
+    connect(pad_, SIGNAL(characterPressed(QString)), screen_, SLOT(addText(QString)));
 }
 
 MainWindow::~MainWindow()

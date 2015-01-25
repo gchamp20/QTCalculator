@@ -3,6 +3,7 @@
 #include <QWidget>
 #include <QVector>
 #include "digitbutton.h"
+#include "characterButton.h"
 
 /*!
  *\file numpad.h
@@ -49,6 +50,12 @@ signals:
     void operatorPressed(QString value);
 
     /*!
+     * \brief characterPressed Triggers when any button requiring a new character is pressed
+     * \param value String written on the button
+     */
+    void characterPressed(QString value);
+
+    /*!
      * \brief enterPressed Triggers when enter button is pressed
      */
     void enterPressed();
@@ -66,7 +73,7 @@ private slots:
     /*!
      * \brief triggerOperator Slot used to inform object when operators are pressed
      */
-    void triggerOperator();
+    void triggerOperator(QString);
 
     /*!
      * \brief triggerEnter Slot used to inform object when enter is pressed
@@ -98,7 +105,7 @@ private:
     /*!
      * \brief operators_ Container for operators buttons
      */
-    QVector<QPushButton* > operators_;
+    QVector<CharacterButton* > operators_;
 
     /*!
      * \brief controls_ Container for controls buttons (enter, clear)

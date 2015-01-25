@@ -10,7 +10,7 @@
 DigitButton::DigitButton(QWidget *parent) : QPushButton(parent)
 {
     value_ = 0;
-    connect(this, SIGNAL(pressed()), this, SLOT());
+    connect(this, SIGNAL(pressed()), this, SLOT(triggerPressed()));
 }
 
 DigitButton::DigitButton(const QString &text, QWidget *parent) : QPushButton(text, parent)

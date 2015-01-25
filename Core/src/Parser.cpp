@@ -22,12 +22,12 @@ Parser::~Parser()
 
 }
 
-double Parser::evaluteExpression(const Expression &input)
+double Parser::evaluteExpression(const Expression &input, bool& failed)
 {
-    return evaluatePostFix(input.getString());
+    return evaluatePostFix(input.getString(), failed);
 }
 
-double Parser::evaluatePostFix(const std::string &input)
+double Parser::evaluatePostFix(const std::string &input, bool& failed)
 {
     std::queue<std::string> postFix = createPostFix(input);
     std::stack<double> numbers;
@@ -57,6 +57,7 @@ double Parser::evaluatePostFix(const std::string &input)
             numbers.push(result);
         }
     }
+    failed = overflow;
     return numbers.top();
 }
 

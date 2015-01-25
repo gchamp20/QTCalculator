@@ -1,8 +1,9 @@
 #ifndef PARSER_H_INCLUDED
 #define PARSER_H_INCLUDE
 
+#include <queue>
+#include <vector>
 #include "Expression.h"
-
 
 /*!
     \file Parser.h
@@ -22,17 +23,17 @@ class Parser {
 
     //! Default Constructor
     /*!
-        Init the parser to decimal mode
+        \brief Init the parser to decimal mode
     */
     Parser();
 
     //! Destructor
     /*!
-        Nothing done here
+        \brief Nothing done here
     */
     ~Parser();
 
-    double evaluteExpression(const Expression &input);
+    double evaluteExpression(const Expression &input, bool& failed);
 
     /*!
         \brief Implementation of Dijkstra's shunting yard algo to create postfix notation
@@ -52,7 +53,7 @@ class Parser {
         \brief Evaluate a postfix notation expression
         \return double. Value of the evalutated output
     */
-    double evaluatePostFix(const std::string &input);
+    double evaluatePostFix(const std::string &input, bool& failed);
 
     /*!
         \brief Takes two numbers and evalutes them according to the operator

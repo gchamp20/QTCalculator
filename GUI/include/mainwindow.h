@@ -27,6 +27,17 @@ public:
 
     ~MainWindow();
 
+private slots:
+    void handleEnter();
+    /*!
+     * \brief handleClear Erase the whole LCDScreen when clear button is pressed
+     */
+    void handleClear();
+
+    /*!
+     * \brief handleErease Erease 1 character for the LCDScreen when erease is pressed
+     */
+    void handleErase();
 private:
 
     /*!

@@ -18,6 +18,18 @@ LCDScreen::~LCDScreen()
     delete textContainer;
 }
 
+void LCDScreen::clearText()
+{
+    text_.clear();
+    updateTextContainer();
+}
+
+void LCDScreen::eraseText(const int &numberCharacter)
+{
+    text_.remove(text_.length() - numberCharacter, numberCharacter);
+    updateTextContainer();
+}
+
 void LCDScreen::setText(const QString &text)
 {
     text_ = text;
@@ -29,15 +41,15 @@ void LCDScreen::setText(const int &toConvert)
     setText(QString::number(toConvert));
 }
 
-void LCDScreen::addText(const QString &text, const int &position)
+void LCDScreen::appendText(const QString &text)
 {
-    text_.insert(position, text);
+    text_.insert(text_.length(), text);
     updateTextContainer();
 }
 
-void LCDScreen::addText(const int &toConvert, const int &position)
+void LCDScreen::appendText(const int &toConvert)
 {
-    addText(QString::number(toConvert), position);
+    appendText(QString::number(toConvert));
 }
 
 void LCDScreen::updateTextContainer()

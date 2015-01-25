@@ -1,5 +1,12 @@
 #include "../include/numpad.h"
 
+/*!
+ *\file numpad.cpp
+ * \Author Guillaume Champagne
+ * \date 23 January 2015
+ * \brief The Numpad implementation file
+ */
+
 Numpad::Numpad(QWidget* parent) : QWidget(parent)
 {
     createButtons();
@@ -52,6 +59,11 @@ void Numpad::triggerClear()
     emit clearPressed();
 }
 
+void Numpad::triggerErase()
+{
+    emit erasePressed();
+}
+
 void Numpad::createButtons()
 {
     for(unsigned int i = 0; i < 10; ++i) {
@@ -79,6 +91,11 @@ void Numpad::initializeButtons()
     operators_[static_cast<int>(Operation::RPARENTHESIS)]->setText(")");
     operators_[static_cast<int>(Operation::MINUS)]->setText("-");
     operators_[static_cast<int>(Operation::MINUS)]->setTextValue("#");
+    operators_[static_cast<int>(Operation::DOT)]->setText(".");
+    operators_[static_cast<int>(Operation::EXPONENT)]->setText("^");
+    controls_[static_cast<int>(Control::ENTER)]->setText("Entré");
+    controls_[static_cast<int>(Control::CLEAR)]->setText("Effacé");
+    controls_[static_cast<int>(Control::EREASE)]->setText("←");
 }
 
 void Numpad::connectSignals()
@@ -92,46 +109,44 @@ void Numpad::connectSignals()
     }
     connect(controls_[static_cast<int>(Control::ENTER)], SIGNAL(pressed()), this, SLOT(triggerEnter()));
     connect(controls_[static_cast<int>(Control::CLEAR)], SIGNAL(pressed()), this, SLOT(triggerClear()));
+    connect(controls_[static_cast<int>(Control::EREASE)], SIGNAL(pressed()), this, SLOT(triggerErase()));
 }
 
 void Numpad::createLayout()
 {
     const int ROW = 5;
     const int COLUMN = 4;
-    const int ROW_SPACE = 5;
-    const int COLUMN_SPACE = 5;
     buttonSize_ = QSize(width()/COLUMN, static_cast<int>(0.80*(height()/ROW)));
     int currentColumn = 0;
     int currentRow = ROW - 1;
-    digits_[0]->setGeometry(calculatePosition(currentRow,currentColumn, ROW_SPACE, COLUMN_SPACE));
+    digits_[0]->setGeometry(calculatePosition(currentRow,currentColumn));
+    digits_[0]->setText("0");
     --currentRow;
     for(int i = 0; i < digits_.size() - 1; ++i) {
         currentColumn = i % (COLUMN - 1);
         if(i % (COLUMN - 1) == 0 && i != 0) {
             --currentRow;
         }
-        digits_[i + 1]->setGeometry(calculatePosition(currentRow,currentColumn, ROW_SPACE, COLUMN_SPACE));
+        digits_[i + 1]->setGeometry(calculatePosition(currentRow,currentColumn));
     }
-    operators_[static_cast<int>(Operation::ADDITION)]->setGeometry(calculatePosition(1, COLUMN - 1,
-                                                                                     ROW_SPACE, COLUMN_SPACE));
-    operators_[static_cast<int>(Operation::SUBSTRACION)]->setGeometry(calculatePosition(2, COLUMN - 1,
-                                                                                     ROW_SPACE, COLUMN_SPACE));
-    operators_[static_cast<int>(Operation::MULTIPLICATION)]->setGeometry(calculatePosition(3, COLUMN - 1,
-                                                                                     ROW_SPACE, COLUMN_SPACE));
-    operators_[static_cast<int>(Operation::DIVISION)]->setGeometry(calculatePosition(4, COLUMN - 1,
-                                                                                     ROW_SPACE, COLUMN_SPACE));
-    operators_[static_cast<int>(Operation::LPARENTHESIS)]->setGeometry(calculatePosition(4, 1,
-                                                                                     ROW_SPACE, COLUMN_SPACE));
-    operators_[static_cast<int>(Operation::RPARENTHESIS)]->setGeometry(calculatePosition(4, 2,
-                                                                                     ROW_SPACE, COLUMN_SPACE));
-    operators_[static_cast<int>(Operation::MINUS)]->setGeometry(calculatePosition(0, COLUMN - 1,
-                                                                                     ROW_SPACE, COLUMN_SPACE));
+    operators_[static_cast<int>(Operation::ADDITION)]->setGeometry(calculatePosition(1, COLUMN - 1));
+    operators_[static_cast<int>(Operation::SUBSTRACION)]->setGeometry(calculatePosition(2, COLUMN - 1));
+    operators_[static_cast<int>(Operation::MULTIPLICATION)]->setGeometry(calculatePosition(3, COLUMN - 1));
+    operators_[static_cast<int>(Operation::DIVISION)]->setGeometry(calculatePosition(0, COLUMN - 1));
+    operators_[static_cast<int>(Operation::LPARENTHESIS)]->setGeometry(calculatePosition(4, 2));
+    operators_[static_cast<int>(Operation::RPARENTHESIS)]->setGeometry(calculatePosition(4, 3));
+    operators_[static_cast<int>(Operation::MINUS)]->setGeometry(calculatePosition(0, COLUMN - 2));
+    operators_[static_cast<int>(Operation::DOT)]->setGeometry(calculatePosition(4, 1));
+    operators_[static_cast<int>(Operation::EXPONENT)]->setGeometry(calculatePosition(0,1));
+    controls_[static_cast<int>(Control::ENTER)]->setGeometry(calculatePosition(ROW , 0, 2));
+    controls_[static_cast<int>(Control::CLEAR)]->setGeometry(calculatePosition(ROW, 2, 2));
+    controls_[static_cast<int>(Control::EREASE)]->setGeometry(calculatePosition(0, 0));
 }
 
-QRect Numpad::calculatePosition(int row, int column, int rowSpacing, int columnSpacing)
+QRect Numpad::calculatePosition(const int& row,const int& column, const int& widthModifier, const int& heightModifier)
 {
-    return QRect(column*(buttonSize_.width()), row * ( buttonSize_.height()),
-                 buttonSize_.width(), buttonSize_.height());
+    return QRect(1 + column*(buttonSize_.width()), row * ( buttonSize_.height()),
+                 widthModifier * buttonSize_.width(), heightModifier * buttonSize_.height());
 }
 
 

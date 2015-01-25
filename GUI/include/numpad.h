@@ -64,6 +64,12 @@ signals:
      * \brief clearPressed Triggers when clear button is pressed
      */
     void clearPressed();
+
+    /*!
+     * \brief ereasePressed Triggers when erease button is pressed (only 1 character to remove)
+     */
+    void erasePressed();
+
 private slots:
     /*!
      * \brief triggerDigits Slot used to inform object when digits are pressed
@@ -85,17 +91,22 @@ private slots:
      */
     void triggerClear();
 
+    /*!
+     * \brief triggerErease Slot used to inform object when erease is pressed
+     */
+    void triggerErase();
 private:
 
     /*!
      * \brief The Operation enum. Used as index in operators_ vector
      */
-    enum class Operation:int {ADDITION, SUBSTRACION, MULTIPLICATION, DIVISION, LPARENTHESIS, RPARENTHESIS, MINUS, END_ENUM};
+    enum class Operation:int {ADDITION, SUBSTRACION, MULTIPLICATION, DIVISION, LPARENTHESIS, RPARENTHESIS, MINUS,
+                              DOT, EXPONENT, END_ENUM};
 
     /*!
      * \brief The Control enum. Used as index in controls_ vector
      */
-    enum class Control:int {ENTER, CLEAR, END_ENUM};
+    enum class Control:int {ENTER, CLEAR, EREASE, END_ENUM};
 
     /*!
      * \brief digits_ Container for digits buttons
@@ -137,7 +148,7 @@ private:
      */
     void createLayout();
 
-    QRect calculatePosition(int row, int column, int rowSpacing, int columnSpacing);
+    QRect calculatePosition(const int& row, const int& column, const int& widthModifier = 1, const int& heightModifier = 1);
 
 };
 

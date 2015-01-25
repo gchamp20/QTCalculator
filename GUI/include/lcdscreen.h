@@ -31,6 +31,9 @@ public:
     explicit LCDScreen(const QString& text, QWidget *parent = 0);
     ~LCDScreen();
 
+    void clearText();
+    void eraseText(const int& numberCharacter);
+
 signals:
 
 public slots:
@@ -50,16 +53,14 @@ public slots:
     /*!
      * \brief addText Appends text to what's already on display
      * \param text String to append
-     * \param position Position to start insertion (default = 0)
      */
-    void addText(const QString& text, const int& position = 0);
+    void appendText(const QString& text);
 
     /*!
      * \brief addText Appends text to what's already on display
      * \param toConvert Int to convert, to append
-     * \parem position Position to start insertion (default = 0)
      */
-    void addText(const int& toConvert, const int& position = 0);
+    void appendText(const int& toConvert);
 
 private:
     /*!

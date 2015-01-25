@@ -6,6 +6,8 @@
 #include <QList>
 #include <QMap>
 #include <QGridLayout>
+#include "../../Core/include/Parser.h"
+#include "../../Core/include/Expression.h"
 #include "lcdscreen.h"
 #include "numpad.h"
 
@@ -35,9 +37,15 @@ private slots:
     void handleClear();
 
     /*!
-     * \brief handleErease Erease 1 character for the LCDScreen when erease is pressed
+     * \brief handleErease Erase 1 character for the LCDScreen when erease is pressed
      */
     void handleErase();
+
+    /*!
+     * \brief handleEquation Update Expression object with correct characters
+     */
+    void handleEquation(QString character);
+
 private:
 
     /*!
@@ -49,6 +57,16 @@ private:
      * \brief pad_ Container for digits,control and operation buttons
      */
     Numpad *pad_;
+
+    /*!
+     * \brief equation_ Equation on the display
+     */
+    Expression equation_;
+
+    /*!
+     * \brief solver_ Parser object used to solve mathematical equations
+     */
+    Parser solver_;
 
     /*!
      * \brief setChildsDimensions Calculate and set child QWidget dimensions

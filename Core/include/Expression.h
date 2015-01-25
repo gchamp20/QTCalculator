@@ -48,10 +48,28 @@ class Expression {
     */
     std::string getString() const;
 
+	/*!
+		\brief Add a new character to the expression
+		\param character new character to add
+	*/
+	void addCharacter(const std::string character);
+
+    /*!
+        \brief removeCharacter Removes character from the current equation (starts at the end)
+        \param number Number of characters to remove
+    */
+    void removeCharacter(const int& number);
+
+	/*!
+        \brief clearAll Clear string and value
+    */
+	void clearAll();
+
     /*!
         \brief Set value member
     */
     void setValue(double value);
+
 
     protected:
 

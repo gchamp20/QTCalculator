@@ -56,6 +56,12 @@ signals:
     void characterPressed(QString value);
 
     /*!
+     * \brief updateEquation Triggers when any button requiring a new character is pressed
+     * \param value Value to add to the equation (could be different from displayed character)
+     */
+    void updateEquation(QString value);
+
+    /*!
      * \brief enterPressed Triggers when enter button is pressed
      */
     void enterPressed();
@@ -79,7 +85,7 @@ private slots:
     /*!
      * \brief triggerOperator Slot used to inform object when operators are pressed
      */
-    void triggerOperator(QString);
+    void triggerOperator(QString, QString);
 
     /*!
      * \brief triggerEnter Slot used to inform object when enter is pressed

@@ -42,11 +42,13 @@ Numpad::~Numpad()
 void Numpad::triggerDigits(int value)
 {
     emit characterPressed(QString::number(value));
+    emit updateEquation(QString::number(value));
 }
 
-void Numpad::triggerOperator(QString value)
+void Numpad::triggerOperator(QString value, QString realValue)
 {
     emit characterPressed(value);
+    emit updateEquation(realValue);
 }
 
 void Numpad::triggerEnter()
@@ -105,7 +107,7 @@ void Numpad::connectSignals()
     }
 
     for(int i = 0; i < operators_.size(); ++i) {
-        connect(operators_[i], SIGNAL(pressed(QString)), this, SLOT(triggerOperator(QString)));
+        connect(operators_[i], SIGNAL(pressed(QString,QString)), this, SLOT(triggerOperator(QString, QString)));
     }
     connect(controls_[static_cast<int>(Control::ENTER)], SIGNAL(pressed()), this, SLOT(triggerEnter()));
     connect(controls_[static_cast<int>(Control::CLEAR)], SIGNAL(pressed()), this, SLOT(triggerClear()));

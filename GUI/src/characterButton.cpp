@@ -34,7 +34,7 @@ QString CharacterButton::getTextValue()
 
 void CharacterButton::triggerPressed()
 {
-    emit pressed(text());
+    emit pressed(text(), realValue_);
 }
 
 //Event override

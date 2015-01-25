@@ -74,8 +74,16 @@ double Parser::doOperation(double firstNb, double secondNb, char operators, bool
     else if(operators == '*' && !testMultiplicationOverflow(firstNb, secondNb)) {
         result = firstNb * secondNb;
     }
-    else if(operators == '/' && !testDivisionOverflow(firstNb, secondNb)) {
-        result = firstNb / secondNb;
+    else if(operators == '/') {
+        if(secondNb == -1) {
+            result = -firstNb;
+        }
+        else if(!testDivisionOverflow(firstNb, secondNb)) {
+            result = firstNb / secondNb;
+        }
+        else {
+            isOverflow = true;
+        }
     }
     else {
         isOverflow = true;
@@ -158,7 +166,7 @@ std::vector<std::string> Parser::parseStringToToken(const std::string &input)
     buffer.clear();
     for(unsigned int i = 0; i < input.length(); i++)
     {
-        if(isdigit(input[i]) || input[i] == '#')
+        if(isdigit(input[i]) || input[i] == '#' || input[i] == '.')
         {
             buffer += input[i];
         }
@@ -230,8 +238,8 @@ bool Parser::testLeftAssociativity(const std::string &operators)
 
 bool Parser::testAdditionOverflow(double a, double b)
 {
-    if(b > 0 && a > std::numeric_limits<double>::max() - b ||
-       b < 0 && a < std::numeric_limits<double>::min() - b) {
+    if((b > 0 && a > std::numeric_limits<double>::max() - b) ||
+       (b < 0 && a < (-std::numeric_limits<double>::max()) - b)) {
         return true;
     }
     else {
@@ -242,8 +250,8 @@ bool Parser::testAdditionOverflow(double a, double b)
 
 bool Parser::testSubstractionOverflow(double a, double b)
 {
-    if(b >= 0 && a < std::numeric_limits<double>::min() + b ||
-       b < 0 && a > std::numeric_limits<double>::max() + b) {
+    if((b >= 0 && a < (-std::numeric_limits<double>::max()) + b) ||
+       (b < 0 && a > std::numeric_limits<double>::max() + b)) {
         return true;
     }
     else {
@@ -261,7 +269,7 @@ bool Parser::testMultiplicationOverflow(double a, double b)
                 return false;
         }
         else {
-            if(b < std::numeric_limits<double>::min()/a)
+            if(b < (-std::numeric_limits<double>::max())/a)
                 return true;
             else
                 return false;
@@ -269,7 +277,7 @@ bool Parser::testMultiplicationOverflow(double a, double b)
     }
     else {
         if(b > 0) {
-            if(a < std::numeric_limits<double>::min()/b)
+            if(a < (-std::numeric_limits<double>::max())/b)
                 return true;
             else
                 return false;
@@ -286,7 +294,7 @@ bool Parser::testMultiplicationOverflow(double a, double b)
 
 bool Parser::testDivisionOverflow(double a, double b)
 {
-    if(b == 0 || b == std::numeric_limits<double>::min() || b == -1)
+    if(b == 0 || b == (-std::numeric_limits<double>::max()) || b == -1)
         return true;
     else
         return false;

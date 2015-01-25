@@ -26,8 +26,10 @@ void LCDScreen::clearText()
 
 void LCDScreen::eraseText(const int &numberCharacter)
 {
-    text_.remove(text_.length() - numberCharacter, numberCharacter);
-    updateTextContainer();
+    if(text_.size() != 0) {
+        text_.remove(text_.length() - numberCharacter, numberCharacter);
+        updateTextContainer();
+    }
 }
 
 void LCDScreen::setText(const QString &text)

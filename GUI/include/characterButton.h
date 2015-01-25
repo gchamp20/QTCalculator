@@ -52,8 +52,10 @@ signals:
     /*!
      * \brief pressed Signals emitted when button is pressed
      * \param value String written on the buton
+     * \param realValue Real value to add to the equation (Ex: x pressed but add *)
      */
-    void pressed(QString value);
+    void pressed(QString value, QString realValue);
+
 private slots:
 
     /*!

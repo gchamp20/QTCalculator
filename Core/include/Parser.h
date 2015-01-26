@@ -106,6 +106,13 @@ class Parser {
         \return bool
     */
     bool testDivisionOverflow(double a, double b);
+
+    /*!
+         * \brief testExponentOverflow Test for exponentoverflow
+         * \return bool
+     */
+    bool testExponentOverflow(double a, double b);
+
 };
 
 #endif // PARSER_H_INCLUDED

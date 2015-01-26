@@ -3,6 +3,8 @@
 #include <sstream>
 #include <iostream>
 #include <limits>
+#include <cmath>
+#include <cerrno>
 #include "../include/Parser.h"
 
 /*!
@@ -84,6 +86,9 @@ double Parser::doOperation(double firstNb, double secondNb, char operators, bool
         else {
             isOverflow = true;
         }
+    }
+    else if(operators == '^' && !testExponentOverflow(firstNb,secondNb)) {
+        result = pow(firstNb,secondNb);
     }
     else {
         isOverflow = true;
@@ -170,6 +175,13 @@ std::vector<std::string> Parser::parseStringToToken(const std::string &input)
         {
             buffer += input[i];
         }
+        else if(input[i] == 'e') { //scientific notation
+            if(i < input.length() - 1) { //make sure we're not going over bounds
+                buffer += input[i];
+                ++i;
+                buffer += input[i];
+            }
+        }
         else
         {
             if(!buffer.empty())
@@ -230,7 +242,7 @@ int Parser::getOperatorPrecedence(const std::string &operators)
 
 bool Parser::testLeftAssociativity(const std::string &operators)
 {
-    if(operators == "+" || operators == "-" || operators == "*" || operators == "/")
+    if(operators == "+" || operators == "-" || operators == "*" || operators == "/" || operators == "^")
         return true;
     else
         return false;
@@ -295,6 +307,15 @@ bool Parser::testMultiplicationOverflow(double a, double b)
 bool Parser::testDivisionOverflow(double a, double b)
 {
     if(b == 0 || b == (-std::numeric_limits<double>::max()) || b == -1)
+        return true;
+    else
+        return false;
+}
+
+bool Parser::testExponentOverflow(double a, double b)
+{
+    double result = std::pow(a,b);
+    if(errno == EDOM || errno == ERANGE)
         return true;
     else
         return false;

@@ -32,19 +32,24 @@ public:
 private slots:
     void handleEnter();
     /*!
-     * \brief handleClear Erase the whole LCDScreen when clear button is pressed
+     * \brief handleClear Erases the whole LCDScreen when clear button is pressed
      */
     void handleClear();
 
     /*!
-     * \brief handleErease Erase 1 character for the LCDScreen when erease is pressed
+     * \brief handleErease Erases 1 character for the LCDScreen when erease is pressed
      */
     void handleErase();
 
     /*!
-     * \brief handleEquation Update Expression object with correct characters
+     * \brief handleEquation Updates Expression object with correct characters
      */
     void handleEquation(QString character);
+
+    /*!
+     * \brief handleCharacterPressed Updates screen_ with correct charactgers
+     */
+    void handleCharacterPressed(QString character);
 
 private:
 
@@ -69,9 +74,18 @@ private:
     Parser solver_;
 
     /*!
+     * \brief errorState_ Set to true if the calculator encountered an error. Reset by clearing/erasing display
+     */
+    bool errorState_;
+    /*!
      * \brief setChildsDimensions Calculate and set child QWidget dimensions
      */
     void setChildsDimensions();
+
+    /*!
+     * \brief isInErrorState Returns errorState_
+     */
+    bool isInErrorState();
 
     /*!
      * \brief resizeEvent Override to resize children components

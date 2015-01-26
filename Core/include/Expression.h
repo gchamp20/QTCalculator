@@ -70,14 +70,7 @@ class Expression {
     */
     void setValue(double value);
 
-
     protected:
-
-    /*!
-        \brief Check if the input is valid. Changes isValid member accordingly
-        \return bool. Value of the test
-    */
-    bool checkValidity() const;
 
     /*!
         Value of the expression when evalutad (via Parser object)
@@ -89,10 +82,6 @@ class Expression {
     */
     std::string expression_;
 
-    /*!
-        Set to true if there's no error in the expression (string input)
-    */
-    bool isValid_;
 
 };
 

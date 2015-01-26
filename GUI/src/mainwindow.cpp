@@ -61,7 +61,15 @@ void MainWindow::handleEnter()
             equation_.addCharacter(toAdd.toStdString());
         }
         else {
-            screen_->setText("Erreur (overflow)");
+            if(solver_.getErrorCode() == Parser::ERR_OVERFLOW) {
+                screen_->setText("Erreur (overflow)");
+            }
+            else if(solver_.getErrorCode() == Parser::ERR_SYNTAX) {
+                screen_->setText("Erreur (syntaxe)");
+            }
+            else {
+                screen_->setText("Erreur");
+            }
             errorState_ = true;
         }
     }

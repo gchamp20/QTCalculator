@@ -5,6 +5,7 @@
 #include <limits>
 #include <cmath>
 #include <cerrno>
+#include <regex>
 #include "../include/Parser.h"
 
 /*!
@@ -24,6 +25,11 @@ Parser::~Parser()
 
 }
 
+int Parser::getErrorCode()
+{
+    return errorCode_;
+}
+
 double Parser::evaluteExpression(const Expression &input, bool& failed)
 {
     return evaluatePostFix(input.getString(), failed);
@@ -31,7 +37,7 @@ double Parser::evaluteExpression(const Expression &input, bool& failed)
 
 double Parser::evaluatePostFix(const std::string &input, bool& failed)
 {
-    std::queue<std::string> postFix = createPostFix(input);
+    std::queue<std::string> postFix = createPostFix(input,failed);
     std::stack<double> numbers;
     std::string debug;
     std::string mainQuery = input;
@@ -39,28 +45,40 @@ double Parser::evaluatePostFix(const std::string &input, bool& failed)
     double firstNumber = 0;
     double secondNumber = 0;
     bool overflow = false;
-    while(!postFix.empty() && !overflow)
+    while(!postFix.empty() && !overflow && !failed)
     {
         debug = postFix.front();
         if(isdigit(postFix.front()[0]) || postFix.front()[0] == '#')
         {
-            numbers.push(convertStringToNumber(postFix.front()));
+            numbers.push(convertStringToNumber(postFix.front(), failed));
             postFix.pop();
         }
         else //is an operator
         {
-            secondNumber = numbers.top();
-            numbers.pop();
-            firstNumber = numbers.top();
-            numbers.pop();
-            result = doOperation(firstNumber, secondNumber, postFix.front().c_str()[0], overflow); //all operators are 1 charater
-          //  std::cout << firstNumber << " " << postFix.front() << " " << secondNumber << " = " << result << std::endl;
-            postFix.pop();
-            numbers.push(result);
+            if(numbers.size() >= 2) {
+                secondNumber = numbers.top();
+                numbers.pop();
+                firstNumber = numbers.top();
+                numbers.pop();
+                result = doOperation(firstNumber, secondNumber, postFix.front().c_str()[0], overflow); //all operators are 1 charater
+                failed = overflow;
+                postFix.pop();
+                numbers.push(result);
+            }
+            else {
+                failed = true;
+                errorCode_ = ERR_SYNTAX;
+            }
         }
     }
-    failed = overflow;
-    return numbers.top();
+    if(!numbers.empty()) {
+        return numbers.top();
+    }
+    else {
+        failed = true;
+        errorCode_ = ERR_SYNTAX;
+        return 0;
+    }
 }
 
 double Parser::doOperation(double firstNb, double secondNb, char operators, bool& isOverflow)
@@ -93,99 +111,113 @@ double Parser::doOperation(double firstNb, double secondNb, char operators, bool
     else {
         isOverflow = true;
     }
-
+    if(isOverflow) {
+        errorCode_ = ERR_OVERFLOW;
+    }
     return result;
 }
 
-std::queue<std::string> Parser::createPostFix(const std::string &input)
+std::queue<std::string> Parser::createPostFix(const std::string &input, bool& failed)
 {
     std::queue<std::string> output;
     std::stack<std::string> operators;
-    std::vector<std::string> tokens = parseStringToToken(input);
-    std::string debug;
-    std::string toPush;
-    for(unsigned int i = 0; i < tokens.size(); i++)
-    {
-        debug = tokens[i];
-        if(isdigit(tokens[i][0]) || tokens[i][0] == '#')
-        {
-            output.push(tokens[i]);
-        }
-        //TO DO
-        //If functions (sin,cos,log...)
-        else if(tokens[i] != "(" && tokens[i] != ")") //assume token is an operator (Functions not implemented)
-        {
-            if(!operators.empty())
-            {
-                int tokensPrecedence = getOperatorPrecedence(tokens[i]);
-                int topTokenPrecedence = getOperatorPrecedence(operators.top());
-                bool isLeftAssociative = testLeftAssociativity(tokens[i]);
-                bool isOperator = (operators.top() != "(" && operators.top() != ")");
-                bool isEmpty = false;
-                while(isOperator && !isEmpty && ((isLeftAssociative  && tokensPrecedence >= topTokenPrecedence) ||
-                        (!isLeftAssociative && tokensPrecedence > topTokenPrecedence)))
-                {
-                    output.push(operators.top());
-                    //std::cout << "Popped : " << operators.top() << std::endl;
-                    operators.pop();
-                    isEmpty = operators.empty();
-                    if(!isEmpty)
-                    {
-                        isOperator = (operators.top() != "(" && operators.top() != ")");
-                        topTokenPrecedence = getOperatorPrecedence(operators.top());
-                    }
-                }
-            }
-            operators.push(tokens[i]);
-            //std::cout << "Pushed : " << tokens[i] << std::endl;
-        }
-        else if(tokens[i] == "(")
-        {
-            operators.push(tokens[i]);
-           // std::cout << "Pushed : " << tokens[i] << std::endl;
-        }
-        else if(tokens[i] == ")")
-        {
-            while(operators.top() != "(")
-            {
-                toPush = operators.top();
-                output.push(operators.top());
-                operators.pop();
-                toPush = operators.top();
-            }
-            operators.pop();
-        }
+    std::vector<std::string> tokens = parseStringToToken(input, failed);
+    if(!failed) {
+        for(unsigned int i = 0; i < tokens.size(); i++)
+         {
+             if(isdigit(tokens[i][0]) || tokens[i][0] == '#')
+             {
+                 output.push(tokens[i]);
+             }
+             //TO DO
+             //If functions (sin,cos,log...)
+             else if(tokens[i] != "(" && tokens[i] != ")") //assume token is an operator (Functions not implemented)
+             {
+                 if(!operators.empty())
+                 {
+                     int tokensPrecedence = getOperatorPrecedence(tokens[i]);
+                     int topTokenPrecedence = getOperatorPrecedence(operators.top());
+                     bool isLeftAssociative = testLeftAssociativity(tokens[i]);
+                     bool isOperator = (operators.top() != "(" && operators.top() != ")");
+                     bool isEmpty = false;
+                     while(isOperator && !isEmpty && ((isLeftAssociative  && tokensPrecedence >= topTokenPrecedence) ||
+                             (!isLeftAssociative && tokensPrecedence > topTokenPrecedence)))
+                     {
+                         output.push(operators.top());
+                         operators.pop();
+                         isEmpty = operators.empty();
+                         if(!isEmpty)
+                         {
+                             isOperator = (operators.top() != "(" && operators.top() != ")");
+                             topTokenPrecedence = getOperatorPrecedence(operators.top());
+                         }
+                     }
+                 }
+                 operators.push(tokens[i]);
+             }
+             else if(tokens[i] == "(")
+             {
+                 operators.push(tokens[i]);
+             }
+             else if(tokens[i] == ")")
+             {
+                 if(!operators.empty()) {
+                     while(operators.top() != "(")
+                     {
+                         output.push(operators.top());
+                         operators.pop();
+                     }
+                     operators.pop();
+                 }
+                 else {
+                     failed = true;
+                     errorCode_ = ERR_SYNTAX;
+                 }
+             }
+             else
+             {
+                 failed = true;
+                 errorCode_ = ERR_SYNTAX;
+             }
+         }
+         while(!operators.empty())
+         {
+             output.push(operators.top());
+             operators.pop();
+         }
     }
-    while(!operators.empty())
-    {
-        output.push(operators.top());
-        operators.pop();
+    if(!operators.empty()) {
+        failed = true;
+        errorCode_ = ERR_SYNTAX;
     }
     return output;
 }
 
-std::vector<std::string> Parser::parseStringToToken(const std::string &input)
+std::vector<std::string> Parser::parseStringToToken(const std::string &input, bool& failed)
 {
     std::vector<std::string> output;
     std::string buffer;
+    unsigned int i = 0;
     buffer.clear();
-    for(unsigned int i = 0; i < input.length(); i++)
-    {
-        if(isdigit(input[i]) || input[i] == '#' || input[i] == '.')
-        {
+    while(!failed && i < input.size()) {
+        if(isdigit(input[i]) || input[i] == '#' || input[i] == '.') {
             buffer += input[i];
         }
         else if(input[i] == 'e') { //scientific notation
             if(i < input.length() - 1) { //make sure we're not going over bounds
-                buffer += input[i];
-                ++i;
-                buffer += input[i];
+                if(input[i+1] == '-' || input[i+1] == '+') {
+                    buffer += input[i];
+                    ++i;
+                    buffer += input[i];
+                }
+                else {
+                    failed = true;
+                    errorCode_ = ERR_SYNTAX;
+                }
             }
         }
-        else
-        {
-            if(!buffer.empty())
-            {
+        else {
+            if(!buffer.empty()) {
                 output.push_back(buffer);
                 buffer.clear();
             }
@@ -193,15 +225,15 @@ std::vector<std::string> Parser::parseStringToToken(const std::string &input)
             output.push_back(buffer);
             buffer.clear();
         }
+        ++i;
     }
-    if(!buffer.empty())
-    {
+    if(!buffer.empty()) {
         output.push_back(buffer);
     }
     return output;
 }
 
-double Parser::convertStringToNumber(const std::string &input)
+double Parser::convertStringToNumber(const std::string &input, bool &failed)
 {
     std::stringstream converter;
     double result;
@@ -216,7 +248,14 @@ double Parser::convertStringToNumber(const std::string &input)
     {
         converter << input;
     }
+
     converter >> result;
+
+    if(converter.fail() || !converter.eof()) {
+        errorCode_ = ERR_SYNTAX;
+        failed = true;
+    }
+
     if(isNegative)
         return -result;
     else

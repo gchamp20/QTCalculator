@@ -36,24 +36,45 @@ class Parser {
     double evaluteExpression(const Expression &input, bool& failed);
 
     /*!
-        \brief Implementation of Dijkstra's shunting yard algo to create postfix notation
-        \return string. The postfix notation to evalute
-    */
-    std::queue<std::string> createPostFix(const std::string &input);
+     * \brief getErrorCode
+     * \return Error code (or errorCodes::NONE (0) if no errors)
+     */
+    int getErrorCode();
+
+    /*!
+     * \brief The errorCodes enum Enum of all error codes
+     */
+    enum errorCodes {NONE, ERR_SYNTAX, ERR_OVERFLOW};
 
     private:
 
     /*!
-        Mode of the parser
+        \brief Mode of the parser
     */
     bool isDecimal_;
 
+    /*!
+     * \brief errorCode_ Used to store the error code (if needed)
+     */
+    int errorCode_;
 
     /*!
         \brief Evaluate a postfix notation expression
         \return double. Value of the evalutated output
     */
     double evaluatePostFix(const std::string &input, bool& failed);
+
+    /*!
+        \brief Implementation of Dijkstra's shunting yard algo to create postfix notation
+        \return string. The postfix notation to evalute
+    */
+    std::queue<std::string> createPostFix(const std::string &input, bool &failed);
+
+    /*!
+        \brief Split the initial string in tokens (Each number, operators separated)
+        \return std::vector<std::string> containing each token
+    */
+    std::vector<std::string> parseStringToToken(const std::string &input, bool& failed);
 
     /*!
         \brief Takes two numbers and evalutes them according to the operator
@@ -74,16 +95,10 @@ class Parser {
     bool testLeftAssociativity(const std::string &operators);
 
     /*!
-        \brief Split the initial string in tokens (Each number, operators separated)
-        \return std::vector<std::string> containing each token
-    */
-    std::vector<std::string> parseStringToToken(const std::string &input);
-
-    /*!
         \brief Takes a string and returns it as a double
         \return double
     */
-    double convertStringToNumber(const std::string &input);
+    double convertStringToNumber(const std::string &input, bool& failed);
 
     /*!
         \brief Test for addition overflow

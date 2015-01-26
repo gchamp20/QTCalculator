@@ -10,22 +10,15 @@
 
 Expression::Expression() : value_(0), expression_("")
 {
-    isValid_ = checkValidity();
 }
 
 Expression::Expression(const std::string &input) : value_(0), expression_(input)
 {
-    isValid_ = checkValidity();
 }
 
 Expression::~Expression()
 {
 
-}
-
-bool Expression::checkValidity() const
-{
-    return true;
 }
 
 double Expression::getValue() const

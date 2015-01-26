@@ -4,6 +4,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), errorState_(false
 {
     screen_ = new LCDScreen("", this);
     setGeometry(50,50,275,400);
+    setWindowTitle("Calculatrice");
     setFixedSize(275,400);
     pad_ = new Numpad(width(), height() - 75, this);
     setChildsDimensions();

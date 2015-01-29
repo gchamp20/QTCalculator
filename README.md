@@ -1,4 +1,7 @@
 // BasicCalculator //
 
--> Core doesn't requires any external libraries
--> Gui requires Qt
+Simple calculator that implements operation priority
+
+TO DO LIST:
+- Shortcut for digits
+- Basic functions like sin,cos, log

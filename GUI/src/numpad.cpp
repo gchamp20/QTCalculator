@@ -95,8 +95,8 @@ void Numpad::initializeButtons()
     operators_[static_cast<int>(Operation::MINUS)]->setTextValue("#");
     operators_[static_cast<int>(Operation::DOT)]->setText(".");
     operators_[static_cast<int>(Operation::EXPONENT)]->setText("^");
-    controls_[static_cast<int>(Control::ENTER)]->setText("Entré");
-    controls_[static_cast<int>(Control::CLEAR)]->setText("Effacé");
+    controls_[static_cast<int>(Control::ENTER)]->setText("Entrer");
+    controls_[static_cast<int>(Control::CLEAR)]->setText("Effacer");
     controls_[static_cast<int>(Control::EREASE)]->setText("←");
 }
 
